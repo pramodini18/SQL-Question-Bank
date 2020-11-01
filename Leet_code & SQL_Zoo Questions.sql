@@ -50,6 +50,7 @@ SELECT name
 WHERE (name LIKE '%a%') and (name LIKE '%e%') and (name LIKE '%i%') and (name LIKE '%o%') and (name LIKE '%u%')
   AND name NOT LIKE '% %';
   
+-- From Nobel Tutorial  
   
 /* 6. Show the 1984 winners and subject ordered by subject and winner name; but list Chemistry and Physics last. */
 
@@ -61,3 +62,34 @@ case
 when subject IN ('Physics','Chemistry') then 1 else 0 
 end, 
 subject, winner;
+
+-- From Select within Select Tutorial
+
+/* 7. Show the countries in Europe with a per capita GDP greater than 'United Kingdom'. */
+
+select name
+from world
+where (gdp/population) > (select (gdp/population) from world where name =  'United Kingdom')
+and continent = 'Europe';
+
+/* 8. List the name and continent of countries in the continents containing either Argentina or Australia. Order by name of the country. */
+
+select name, continent
+from world
+where continent = (select continent from world where name = 'Argentina') or continent = (select continent from world where name = 'Australia')
+order by name;
+
+/* 9. Which country has a population that is more than Canada but less than Poland? Show the name and the population. */
+
+select name, population
+from world
+where population > ( select population from world where name = 'Canada') and
+population < ( select population from world where name = 'Poland');
+
+/* 10. Which countries have a GDP greater than every country in Europe? [Give the name only.] (Some countries may have NULL gdp values) */
+
+select name
+from world
+where gdp > (select max(gdp) from world where continent = 'Europe')
+
+
