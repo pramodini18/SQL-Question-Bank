@@ -92,4 +92,19 @@ select name
 from world
 where gdp > (select max(gdp) from world where continent = 'Europe')
 
+/* 11. Germany (population 80 million) has the largest population of the countries in Europe. Austria (population 8.5 million) has 11% of the population of Germany.
+
+Show the name and the population of each country in Europe. Show the population as a percentage of the population of Germany. */
+
+select name, Concat(round(((population/(select population from world where name = 'Germany'))*100)),'%')
+from world
+where continent = 'Europe';
+
+/*12. Find the largest country (by area) in each continent, show the continent, the name and the area */
+
+select continent,name, area 
+from world x
+where area >= All(select area from world y
+where y.continent = x.continent);
+
 
