@@ -107,4 +107,11 @@ from world x
 where area >= All(select area from world y
 where y.continent = x.continent);
 
+/*13. Some countries have populations more than three times that of any of their neighbours (in the same continent). Give the countries and continents. */
 
+SELECT x.name, x.continent FROM world x
+WHERE x.population > All(SELECT 3*(y.population) FROM world y
+WHERE y.continent=x.continent
+and x.name != y.name)
+
+/*14. 
