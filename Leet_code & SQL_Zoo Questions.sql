@@ -114,4 +114,12 @@ WHERE x.population > All(SELECT 3*(y.population) FROM world y
 WHERE y.continent=x.continent
 and x.name != y.name)
 
-/*14. 
+/*14. List each continent and the name of the country that comes first alphabetically. */
+
+select continent, name
+from world x
+where name =
+(select name from world y
+where x.continent = y.continent
+order by name
+limit 1)
