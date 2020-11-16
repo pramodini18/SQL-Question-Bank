@@ -169,3 +169,86 @@ sum(case when teamid = team2 then 1 else 0 end) as score2
 from game left join goal on matchid = id
 group by mdate,team1,team2
 order by mdate, matchid, team1,team2
+
+--- More Join 
+
+/* 20. Obtain a list, in alphabetical order, of actors who've had at least 15 starring roles */
+
+select name
+from actor
+join casting on 
+actor.id = actorid
+join movie on
+movie.id = movieid
+where ord = 1
+group by name
+having count(name) >=15
+order by name
+
+/* 21. List all the people who have worked with 'Art Garfunkel'. */
+
+select name
+from actor
+join casting on 
+actor.id = actorid
+join movie on
+movie.id = movieid
+where movieid in (select movieid
+from actor
+join casting on 
+actor.id = actorid
+join movie on
+movie.id = movieid
+where name = 'Art Garfunkel')
+and name != 'Art Garfunkel'
+
+/* 22. List the film title and the leading actor for all of the films 'Julie Andrews' played in. */
+
+select title,name
+from actor
+join casting on 
+actor.id = actorid
+join movie on
+movie.id = movieid
+where movieid in (select movieid
+from actor
+join casting on 
+actor.id = actorid
+join movie on
+movie.id = movieid
+where name = 'Julie Andrews')
+and ord = 1
+
+-- Using NULL
+/*23. Use the COALESCE function and a LEFT JOIN to print the teacher name and department name. Use the string 'None' where there is no department. */
+
+SELECT teacher.name, COALESCE(dept.name,'None')
+ FROM teacher left JOIN dept
+           ON (teacher.dept=dept.id)
+		   
+/* 24. Use COUNT to show the number of teachers and the number of mobile phones. */
+
+select count(name), count(mobile)
+from teacher
+
+/* 25. Use COUNT and GROUP BY dept.name to show each department and the number of staff. Use a RIGHT JOIN to ensure that the Engineering department is listed. */
+
+select dept.name, count(teacher.name)
+from teacher
+right join dept
+on teacher.dept = dept.id
+group by 1
+
+
+/* 26. Use CASE to show the name of each teacher followed by 'Sci' if the teacher is in dept 1 or 2 and 'Art' otherwise. */
+
+select name,
+case
+when (dept = 1 or dept =2) then 'Sci'
+else 'Art'
+End 
+from teacher
+
+/* 27. 
+
+
