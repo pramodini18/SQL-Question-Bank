@@ -249,6 +249,36 @@ else 'Art'
 End 
 from teacher
 
-/* 27. 
+--- SELF JOIN
+
+/* 27. Give a distinct list of the stops which may be reached from 'Craiglockhart' by taking one bus, including 'Craiglockhart' itself, offered by the LRT company. Include the company and bus no. of the relevant services. */
+
+select s.name,  a.company, a.num 
+from route a
+inner join route b
+on (a.num = b.num ) and (a.company = b.company)
+join stops s
+on s.id = a.stop
+where b.stop = (select id from stops where name = 'Craiglockhart')
+
+/* 28. Find the routes involving two buses that can go from Craiglockhart to Lochend.
+Show the bus no. and company for the first bus, the name of the stop for the transfer,
+and the bus no. and company for the second bus. */
+
+select  a.num , a.company, s.name, b1.num , b1.company
+from route a
+inner join route b
+on (a.num = b.num ) and (a.company = b.company)
+join stops s
+on s.id = a.stop
+join route a1
+on s.id = a1.stop
+inner join route b1
+on (a1.num = b1.num ) and (a1.company = b1.company)
+where b.stop = (select id from stops where name = 'Craiglockhart')
+and
+b1.stop = (select id from stops where name = 'Lochend')
+group by a.num , a.company, s.name, b1.num , b1.company
+
 
 
