@@ -14,6 +14,11 @@ select name, population , area
 from world
 where (area > 3000000) XOR (population > 250000000);
 
+SELECT name, population,area
+FROM world WHERE
+(population>250000000 OR area>3000000)
+AND NOT(population>250000000 AND area>3000000);
+
 /* 2. Show the name and population in millions and the GDP in billions for the countries of the continent 'South America'. Use the ROUND function to show the values to two decimal places.
 
 For South America show population in millions and GDP in billions both to 2 decimal places.
@@ -79,6 +84,12 @@ from world
 where continent = (select continent from world where name = 'Argentina') or continent = (select continent from world where name = 'Australia')
 order by name;
 
+select name, continent
+from world
+where continent in (select continent from world where name = 'Argentina' 
+or name = 'Australia')
+order by name;
+
 /* 9. Which country has a population that is more than Canada but less than Poland? Show the name and the population. */
 
 select name, population
@@ -91,6 +102,11 @@ population < ( select population from world where name = 'Poland');
 select name
 from world
 where gdp > (select max(gdp) from world where continent = 'Europe')
+
+SELECT name  
+  FROM world  
+ WHERE gdp > ALL (SELECT gdp FROM world WHERE continent ='Europe' and gdp is not null)
+
 
 /* 11. Germany (population 80 million) has the largest population of the countries in Europe. Austria (population 8.5 million) has 11% of the population of Germany.
 
