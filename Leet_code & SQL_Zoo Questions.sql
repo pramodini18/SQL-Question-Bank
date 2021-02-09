@@ -116,6 +116,10 @@ select name, Concat(round(((population/(select population from world where name 
 from world
 where continent = 'Europe';
 
+select name, concat(cast(round(100*(population/(select population from world where name = 'Germany')),0)as int),'%') as percentage
+from world
+where continent = 'Europe'
+
 /*12. Find the largest country (by area) in each continent, show the continent, the name and the area */
 
 select continent,name, area 
