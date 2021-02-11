@@ -127,6 +127,19 @@ from world x
 where area >= All(select area from world y
 where y.continent = x.continent);
 
+select continent,name, area 
+from world 
+where area IN (select max(area) from world group by continent);
+
+select x.continent,name, x.area 
+from world x
+join
+(select continent, max(area) as AREA
+from world y
+group by y.continent) as w2
+on x.continent = w2.continent 
+and x.area = w2.area
+
 /*13. Some countries have populations more than three times that of any of their neighbours (in the same continent). Give the countries and continents. */
 
 SELECT x.name, x.continent FROM world x
