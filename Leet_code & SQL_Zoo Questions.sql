@@ -157,6 +157,11 @@ where x.continent = y.continent
 order by name
 limit 1)
 
+select continent, min(name) as name
+from world
+group by continent
+order by continent;
+
 /* 15. List the continents that have a total population of at least 100 million. */
 
 select continent
@@ -200,7 +205,7 @@ sum(case when teamid = team1 then 1 else 0 end) as score1,
 team2,
 sum(case when teamid = team2 then 1 else 0 end) as score2
 from game left join goal on matchid = id
-group by mdate,team1,team2
+group by mdate,matchid,team1,team2
 order by mdate, matchid, team1,team2
 
 --- More Join 
