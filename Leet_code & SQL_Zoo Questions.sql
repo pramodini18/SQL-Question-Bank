@@ -438,6 +438,212 @@ where (id%2) != 0
 and description != 'boring'
 order by rating desc;
 
-/* 32.
+/* 32. Delete Duplicate Emails
+Write a SQL query to delete all duplicate email entries in a table named Person, keeping only unique emails based on its smallest Id.
+
++----+------------------+
+| Id | Email            |
++----+------------------+
+| 1  | john@example.com |
+| 2  | bob@example.com  |
+| 3  | john@example.com |
++----+------------------+
+Id is the primary key column for this table.
+For example, after running your query, the above Person table should have the following rows:
+
++----+------------------+
+| Id | Email            |
++----+------------------+
+| 1  | john@example.com |
+| 2  | bob@example.com  |
++----+------------------+
+
+Note: this will work only if use delete function. */
+
+Delete p1
+from person p1, person p2
+where (p1.email = p2.email) and (p1.id > p2.id)
+
+delete from person 
+where id not in
+(
+select * from 
+(select min(id) from person 
+group by email)as p);
+
+/* 33. Duplicate Emails
+Write a SQL query to find all duplicate emails in a table named Person.
+
++----+---------+
+| Id | Email   |
++----+---------+
+| 1  | a@b.com |
+| 2  | c@d.com |
+| 3  | a@b.com |
++----+---------+
+For example, your query should return the following for the above table:
+
++---------+
+| Email   |
++---------+
+| a@b.com |
++---------+
+Note: All emails are in lowercase. */
+
+select Email
+from Person
+group by Email
+having count(Email) > 1;
+
+/* 34. Second Highest Salary
+Write a SQL query to get the second highest salary from the Employee table.
+
++----+--------+
+| Id | Salary |
++----+--------+
+| 1  | 100    |
+| 2  | 200    |
+| 3  | 300    |
++----+--------+
+For example, given the above Employee table, the query should return 200 as the second highest salary. If there is no second highest salary, then the query should return null.
+
++---------------------+
+| SecondHighestSalary |
++---------------------+
+| 200                 |
++---------------------+ */
+
+
+select COALESCE((select distinct salary from employee order by Salary desc limit 1,1),null) as 'SecondHighestSalary' ;
+
+/* 35. Nth Highest Salary
+Write a SQL query to get the nth highest salary from the Employee table.
+
++----+--------+
+| Id | Salary |
++----+--------+
+| 1  | 100    |
+| 2  | 200    |
+| 3  | 300    |
++----+--------+
+For example, given the above Employee table, the nth highest salary where n = 2 is 200. If there is no nth highest salary, then the query should return null.
+
++------------------------+
+| getNthHighestSalary(2) |
++------------------------+
+| 200                    |
++------------------------+ */
+
+CREATE FUNCTION getNthHighestSalary(N INT) RETURNS INT
+BEGIN
+    set N = N-1;
+  RETURN (
+      select ifnull((Select distinct Salary
+      from employee
+      order by Salary desc
+      limit N,1),null)
+  );
+END
+
+/* 36. Customers Who Never Order
+Suppose that a website contains two tables, the Customers table and the Orders table. Write a SQL query to find all customers who never order anything.
+
+Table: Customers.
+
++----+-------+
+| Id | Name  |
++----+-------+
+| 1  | Joe   |
+| 2  | Henry |
+| 3  | Sam   |
+| 4  | Max   |
++----+-------+
+Table: Orders.
+
++----+------------+
+| Id | CustomerId |
++----+------------+
+| 1  | 3          |
+| 2  | 1          |
++----+------------+
+Using the above tables as example, return the following:
+
++-----------+
+| Customers |
++-----------+
+| Henry     |
+| Max       |
++-----------+ */
+
+select Name As Customers
+from Customers
+where id not in (select Customerid from Orders);
+
+/* 37. Combine Two Tables
+
+Table: Person
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| PersonId    | int     |
+| FirstName   | varchar |
+| LastName    | varchar |
++-------------+---------+
+PersonId is the primary key column for this table.
+Table: Address
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| AddressId   | int     |
+| PersonId    | int     |
+| City        | varchar |
+| State       | varchar |
++-------------+---------+
+AddressId is the primary key column for this table.
+ 
+
+Write a SQL query for a report that provides the following information for each person in the Person table, regardless if there is an address for each of those people:
+
+FirstName, LastName, City, State */
+
+select p.FirstName, p.LastName, a.City, a.State
+from Person p
+left join Address a
+on p.PersonId = a.PersonId;
+
+/* 38. Employees Earning More Than Their Managers
+The Employee table holds all employees including their managers. Every employee has an Id, and there is also a column for the manager Id.
+
++----+-------+--------+-----------+
+| Id | Name  | Salary | ManagerId |
++----+-------+--------+-----------+
+| 1  | Joe   | 70000  | 3         |
+| 2  | Henry | 80000  | 4         |
+| 3  | Sam   | 60000  | NULL      |
+| 4  | Max   | 90000  | NULL      |
++----+-------+--------+-----------+
+Given the Employee table, write a SQL query that finds out employees who earn more than their managers. For the above table, Joe is the only employee who earns more than his manager.
+
++----------+
+| Employee |
++----------+
+| Joe      |
++----------+ */
+
+select e1.Name as Employee 
+from Employee e1, employee e2
+where e1.Salary > e2.Salary
+and e1.managerId = e2.Id;
+
+select e1.Name as Employee
+from Employee e1
+inner join Employee e2
+on e1.managerid = e2.id
+where e1.salary > e2.salary
+
+
+
 
 
