@@ -378,6 +378,7 @@ from Department
 group by id;
 
 -- Note: Results are the same even if I use different aggregrate function like min or sum.
+-- Note : Read more max(case) here : https://boards.straightdope.com/t/sql-query-max-case-when/689438
 
 /* 30. Big Countries
 There is a table World
@@ -643,7 +644,168 @@ inner join Employee e2
 on e1.managerid = e2.id
 where e1.salary > e2.salary
 
+/* 39. Rising Temperature
+Table: Weather
+
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| id            | int     |
+| recordDate    | date    |
+| temperature   | int     |
++---------------+---------+
+id is the primary key for this table.
+This table contains information about the temperature in a certain day.
+ 
+
+Write an SQL query to find all dates' id with higher temperature compared to its previous dates (yesterday).
+
+Return the result table in any order.
+
+The query result format is in the following example:
+
+Weather
++----+------------+-------------+
+| id | recordDate | Temperature |
++----+------------+-------------+
+| 1  | 2015-01-01 | 10          |
+| 2  | 2015-01-02 | 25          |
+| 3  | 2015-01-03 | 20          |
+| 4  | 2015-01-04 | 30          |
++----+------------+-------------+
+
+Result table:
++----+
+| id |
++----+
+| 2  |
+| 4  |
++----+
+In 2015-01-02, temperature was higher than the previous day (10 -> 25).
+In 2015-01-04, temperature was higher than the previous day (20 -> 30). */
+
+/* 40. Department Highest Salary
+The Employee table holds all employees. Every employee has an Id, a salary, and there is also a column for the department Id.
+
++----+-------+--------+--------------+
+| Id | Name  | Salary | DepartmentId |
++----+-------+--------+--------------+
+| 1  | Joe   | 70000  | 1            |
+| 2  | Jim   | 90000  | 1            |
+| 3  | Henry | 80000  | 2            |
+| 4  | Sam   | 60000  | 2            |
+| 5  | Max   | 90000  | 1            |
++----+-------+--------+--------------+
+The Department table holds all departments of the company.
+
++----+----------+
+| Id | Name     |
++----+----------+
+| 1  | IT       |
+| 2  | Sales    |
++----+----------+
+Write a SQL query to find employees who have the highest salary in each of the departments. For the above tables, your SQL query should return the following rows (order of rows does not matter).
+
++------------+----------+--------+
+| Department | Employee | Salary |
++------------+----------+--------+
+| IT         | Max      | 90000  |
+| IT         | Jim      | 90000  |
+| Sales      | Henry    | 80000  |
++------------+----------+--------+ */
+
+select d.Name as Department, e.Name as Employee, e.Salary as Salary
+from employee e
+join department d
+on e.departmentId = d.id
+where (e.departmentId, e.salary) in (select DepartmentId, max(Salary) from employee group by departmentId)
 
 
+With temp as
+(
+select DepartmentId as dp1, Max(Salary) as Sal1
+    from employee
+    group by DepartmentId
+)
+select d.Name as Department, e.Name as Employee, Sal1 as Salary
+from employee e, temp t, Department d
+where e.departmentid = t.dp1
+and e.Salary = t.Sal1
+and t.dp1 = d.id
+	
+/* 41. Rank Scores
+Write a SQL query to rank scores. If there is a tie between two scores, both should have the same ranking. Note that after a tie, the next ranking number should be the next consecutive integer value. In other words, there should be no "holes" between ranks.
 
++----+-------+
+| Id | Score |
++----+-------+
+| 1  | 3.50  |
+| 2  | 3.65  |
+| 3  | 4.00  |
+| 4  | 3.85  |
+| 5  | 4.00  |
+| 6  | 3.65  |
++----+-------+
+For example, given the above Scores table, your query should generate the following report (order by highest score):
 
++-------+---------+
+| score | Rank    |
++-------+---------+
+| 4.00  | 1       |
+| 4.00  | 1       |
+| 3.85  | 2       |
+| 3.65  | 3       |
+| 3.65  | 3       |
+| 3.50  | 4       |
++-------+---------+ */
+
+select score, dense_rank() over(order by score desc)  as `Rank`
+from Scores;
+
+/* 42. Consecutive Numbers
+Table: Logs
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| id          | int     |
+| num         | varchar |
++-------------+---------+
+id is the primary key for this table.
+ 
+
+Write an SQL query to find all numbers that appear at least three times consecutively.
+
+Return the result table in any order.
+
+The query result format is in the following example:
+
+ 
+
+Logs table:
++----+-----+
+| Id | Num |
++----+-----+
+| 1  | 1   |
+| 2  | 1   |
+| 3  | 1   |
+| 4  | 2   |
+| 5  | 1   |
+| 6  | 2   |
+| 7  | 2   |
++----+-----+
+
+Result table:
++-----------------+
+| ConsecutiveNums |
++-----------------+
+| 1               |
++-----------------+
+1 is the only number that appears consecutively for at least three times. */
+
+select distinct num as ConsecutiveNums
+from 
+(select num, lead(num) over(order by id) as lead_num, 
+lag(num) over(order by id) as lag_num
+from logs)a
+where num =lag_num and num = lead_num;
