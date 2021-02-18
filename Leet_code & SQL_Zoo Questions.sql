@@ -20,7 +20,6 @@ FROM world WHERE
 AND NOT(population>250000000 AND area>3000000);
 
 /* 2. Show the name and population in millions and the GDP in billions for the countries of the continent 'South America'. Use the ROUND function to show the values to two decimal places.
-
 For South America show population in millions and GDP in billions both to 2 decimal places.
 Millions and billions */
 
@@ -29,16 +28,13 @@ from world
 where continent =  'South America'
 
 
-/* 3.Show the name and per-capita GDP for those countries with a GDP of at least one trillion (1000000000000; that is 12 zeros). Round this value to the nearest 1000.
-
-Show per-capita GDP for the trillion dollar countries to the nearest $1000. */
+/* 3.Show the name and per-capita GDP for those countries with a GDP of at least one trillion (1000000000000; that is 12 zeros). Round this value to the nearest 1000.Show per-capita GDP for the trillion dollar countries to the nearest $1000. */
 
 select name, round((gdp/population),-3)
 from world
 where gdp >= 1000000000000;
 
 /* 4. The capital of Sweden is Stockholm. Both words start with the letter 'S'.
-
 Show the name and the capital where the first letters of each match. Don't include countries where the name and the capital are the same word. */
 
 SELECT name, capital
@@ -47,7 +43,6 @@ where LEFT(name,1) = left(capital,1)
 and name <> capital;
 
 /* 5. Equatorial Guinea and Dominican Republic have all of the vowels (a e i o u) in the name. They don't count because they have more than one word in the name.
-
 Find the country that has all the vowels and no spaces in its name. */
 
 SELECT name
@@ -109,7 +104,6 @@ SELECT name
 
 
 /* 11. Germany (population 80 million) has the largest population of the countries in Europe. Austria (population 8.5 million) has 11% of the population of Germany.
-
 Show the name and the population of each country in Europe. Show the population as a percentage of the population of Germany. */
 
 select name, Concat(round(((population/(select population from world where name = 'Germany'))*100)),'%')
@@ -336,7 +330,6 @@ The month has values in ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","
  
 
 Write an SQL query to reformat the table such that there is a department id column and a revenue column for each month.
-
 The query result format is in the following example:
 
 Department table:
@@ -393,9 +386,7 @@ There is a table World
 | Angola          | Africa     | 1246700    | 20609294     | 100990000     |
 +-----------------+------------+------------+--------------+---------------+
 A country is big if it has an area of bigger than 3 million square km or a population of more than 25 million.
-
 Write a SQL solution to output big countries' name, population and area.
-
 For example, according to the above table, we should output:
 
 +--------------+-------------+--------------+
@@ -412,9 +403,6 @@ where area > 3000000 or population > 25000000;
 /* 31. Not Boring Movies
 X city opened a new cinema, many people would like to go to this cinema. The cinema also gives out a poster indicating the movies’ ratings and descriptions.
 Please write a SQL query to output movies with an odd numbered ID and a description that is not 'boring'. Order the result by rating.
-
- 
-
 For example, table cinema:
 
 +---------+-----------+--------------+-----------+
@@ -474,7 +462,6 @@ group by email)as p);
 
 /* 33. Duplicate Emails
 Write a SQL query to find all duplicate emails in a table named Person.
-
 +----+---------+
 | Id | Email   |
 +----+---------+
@@ -483,7 +470,6 @@ Write a SQL query to find all duplicate emails in a table named Person.
 | 3  | a@b.com |
 +----+---------+
 For example, your query should return the following for the above table:
-
 +---------+
 | Email   |
 +---------+
@@ -498,7 +484,6 @@ having count(Email) > 1;
 
 /* 34. Second Highest Salary
 Write a SQL query to get the second highest salary from the Employee table.
-
 +----+--------+
 | Id | Salary |
 +----+--------+
@@ -507,7 +492,6 @@ Write a SQL query to get the second highest salary from the Employee table.
 | 3  | 300    |
 +----+--------+
 For example, given the above Employee table, the query should return 200 as the second highest salary. If there is no second highest salary, then the query should return null.
-
 +---------------------+
 | SecondHighestSalary |
 +---------------------+
@@ -519,7 +503,6 @@ select COALESCE((select distinct salary from employee order by Salary desc limit
 
 /* 35. Nth Highest Salary
 Write a SQL query to get the nth highest salary from the Employee table.
-
 +----+--------+
 | Id | Salary |
 +----+--------+
@@ -583,7 +566,6 @@ where id not in (select Customerid from Orders);
 /* 37. Combine Two Tables
 
 Table: Person
-
 +-------------+---------+
 | Column Name | Type    |
 +-------------+---------+
@@ -603,10 +585,7 @@ Table: Address
 | State       | varchar |
 +-------------+---------+
 AddressId is the primary key column for this table.
- 
-
 Write a SQL query for a report that provides the following information for each person in the Person table, regardless if there is an address for each of those people:
-
 FirstName, LastName, City, State */
 
 select p.FirstName, p.LastName, a.City, a.State
@@ -616,7 +595,6 @@ on p.PersonId = a.PersonId;
 
 /* 38. Employees Earning More Than Their Managers
 The Employee table holds all employees including their managers. Every employee has an Id, and there is also a column for the manager Id.
-
 +----+-------+--------+-----------+
 | Id | Name  | Salary | ManagerId |
 +----+-------+--------+-----------+
@@ -683,6 +661,11 @@ Result table:
 +----+
 In 2015-01-02, temperature was higher than the previous day (10 -> 25).
 In 2015-01-04, temperature was higher than the previous day (20 -> 30). */
+
+select w1.id as 'Id'
+from weather w1, weather w2
+where datediff(w1.recordDate, w2.recordDate) = 1
+and w1.temperature > w2.temperature
 
 /* 40. Department Highest Salary
 The Employee table holds all employees. Every employee has an Id, a salary, and there is also a column for the department Id.
@@ -809,3 +792,50 @@ from
 lag(num) over(order by id) as lag_num
 from logs)a
 where num =lag_num and num = lead_num;
+
+/*43. Exchange Seats
+
+Mary is a teacher in a middle school and she has a table seat storing students' names and their corresponding seat ids.
+The column id is continuous increment.
+Mary wants to change seats for the adjacent students.
+Can you write a SQL query to output the result for Mary?
+
++---------+---------+
+|    id   | student |
++---------+---------+
+|    1    | Abbot   |
+|    2    | Doris   |
+|    3    | Emerson |
+|    4    | Green   |
+|    5    | Jeames  |
++---------+---------+
+For the sample input, the output is:
++---------+---------+
+|    id   | student |
++---------+---------+
+|    1    | Doris   |
+|    2    | Abbot   |
+|    3    | Green   |
+|    4    | Emerson |
+|    5    | Jeames  |
++---------+---------+
+Note:If the number of students is odd, there is no need to change the last one's seat. */
+
+select s1.id, s2.student
+from seat s1 , seat s2
+where 
+CASE
+when s1.id%2 = 1 AND s1.id = (select max(id) from seat) then s1.id = s2.id
+when s1.id%2 = 0 then s1.id = s2.id+1
+else s2.id = s1.id + 1
+END
+order by s1.id;
+
+select
+(CASE
+when (((select count(id) from seat)%2 = 1) and id = (select max(id) from seat)) then id
+when (id %2 = 1) then id+1
+else id-1
+END) as id, student
+from seat
+order by id;
