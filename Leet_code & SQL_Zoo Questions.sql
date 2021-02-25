@@ -888,3 +888,44 @@ when 'f' then 'm'
 when 'm' then 'f'
 end
 
+/* 44. Best teacher
+Given the table marks containing the details of marks obtained by students containing the following columns
+
+Student_id : Storing the id of the student
+Course         : Storing the name of the course 
+Marks           : Storing the marks obtained by the student in the particular course
+
+and the table teacher containing the details of the teacher with the following columns
+
+Teacher_name : Storing the name of the teacher
+Course                 : Storing the course taught by the teacher
+
+Write a query to find the name of the teacher teaching the course with the highest average. */
+
+select Teacher_name
+from Teacher
+where course = (select course 
+from marks
+group by course
+order by avg(marks) desc 
+limit 1);
+
+/* 45. Possible scores
+Consider two tables named mathematics and science storing the possible marks a student can get in the two courses. Both tables contain one column named score.
+Write a query to list all possible total scores a student can get. Order the result in the descending order of total score. If total score is similar for two cases, priority shall be given to the mathematics score. */
+
+
+select mathematics.score + science.score
+from mathematics, science
+order by  mathematics.score + science.score desc,mathematics.score desc; 
+
+/*46. Average Salary
+Consider the following table named salary containing the details of employee salary of the employees in an organisation along with their department names. Find the name of the department having the maximum average salary.
+
+| Emp_Id | Dep_name | Salary | */
+
+select dep_name
+from salary
+group by(dep_name)
+order by avg(salary) desc
+limit 1;
