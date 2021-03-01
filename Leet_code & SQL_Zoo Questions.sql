@@ -929,3 +929,97 @@ from salary
 group by(dep_name)
 order by avg(salary) desc
 limit 1;
+
+/* 47.Better than average
+Consider the following table marks part of a school database containing the following columns
+Student_id : Storing the id of the student
+Course         : Storing the name of the course 
+Marks           : Storing the marks obtained by the student in the particular course
+
+Write a query to determine the id of the students having average makes higher than the overall average. Order the results by student id in ascending order */
+select student_id
+from marks
+group by student_id
+having avg(Marks) >(select avg(Marks) from marks)
+order by student_id;
+
+/*48. Grandfather
+Consider a table named 'father' storing the details of all father-son pairs in a residential society. Write a code to determine the number of grandfather-grandson pairs in the society. For the purpose of the problem, consider grandson as son of one's son. Note that the table stores data in the following form﻿
+father
+father_id | son_id */
+
+select count(*)
+from father f1 inner join father f2
+on f1.father_id = f2.son_id;
+
+/*49. Dependents
+Consider the schema containing two table employee and dependent containing the columns as given below.
+employee
+ssn | dno
+
+dependent
+essn | dependent_name
+
+﻿Write a query to determine the name of all dependents of the employees of department number 5? Order the results by name of dependents. */
+
+select d.dependent_name
+from dependent d
+inner join employee e
+on d.essn = e.ssn
+where e.dno = 5
+order by d.dependent_name;
+
+/* 50. MP vs MLA
+Consider two tables, storing the date of commencement of tenures of MP (Member of Parliament) and MLA (Member of Legislative Assembly) . Note that is it possible that a person has become the MP or MLA multiple times so he or she will be in the table multiple times.
+﻿Write a query to determine the name of the person who took the longest time to be elected as an MP after being elected as a MLA. Consider the first time a person was elected as a MLA and MP. Note that the dates are in form (YYYY-DD-MM format) */
+
+select m.mp_name
+from MP m
+inner join MLA l
+on m.mp_name = l.mla_name
+group by m.mp_name
+order by (min(m.joining_date) - min(l.joining_date)) desc
+limit 1;
+
+/* 51. Student Salary
+Given the following table salary from a university database, write a query to find the student_id of with salary greater than 59,999. 
+
+| Student_id | Salary |
+
+Order your results in the order of student_id. */
+
+select student_id
+from salary
+where salary > 59999
+
+/*52. Average marks
+Consider the following table marks part of a school database containing the following columns
+Student_id : Storing the id of the student
+Course         : Storing the name of the course 
+Marks           : Storing the marks obtained by the student in the particular course
+
+Write a query to determine the average marks obtained by students. Order the results in the descending order of average marks. In case the average marks are same for two students, student with a lower student_id should appear first.
+
+The output should be of the form
+|Student_id|avg(marks)| */
+select student_id, avg(marks)
+from marks
+group by student_id
+order by avg(marks) desc, student_id;
+
+/*53. Winning Arsenal
+
+Consider a table named 'home' storing Arsenal football club's performance in the league at home in 2003-04 season, while the table 'away' stores Arsenal's performance away in the same season.
+home
+opponent | goals_scored | goals_conceded
+away
+opponent | goals_scored | goals_conceded
+Note that a team is awarded three points for a win, one for a draw and zero for a loss. Write a query to determine the number of teams against whom Arsenal won all the available six points. */
+
+select count(*)
+from home h
+inner join away a
+on h.opponent = a.opponent
+where h.goals_scored > h.goals_conceded
+and a.goals_scored > a.goals_conceded
+
