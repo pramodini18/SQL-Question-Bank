@@ -1,3 +1,5 @@
+--------------------------     This has SQL questions from SQL Zoo, Leet code and upGrad ---------------------------------------------------
+
 /* SQL Zoo Questions */
 
 -- From WORLD Tutorial ---
@@ -575,7 +577,6 @@ Table: Person
 +-------------+---------+
 PersonId is the primary key column for this table.
 Table: Address
-
 +-------------+---------+
 | Column Name | Type    |
 +-------------+---------+
@@ -604,7 +605,6 @@ The Employee table holds all employees including their managers. Every employee 
 | 4  | Max   | 90000  | NULL      |
 +----+-------+--------+-----------+
 Given the Employee table, write a SQL query that finds out employees who earn more than their managers. For the above table, Joe is the only employee who earns more than his manager.
-
 +----------+
 | Employee |
 +----------+
@@ -634,12 +634,8 @@ Table: Weather
 +---------------+---------+
 id is the primary key for this table.
 This table contains information about the temperature in a certain day.
- 
-
 Write an SQL query to find all dates' id with higher temperature compared to its previous dates (yesterday).
-
 Return the result table in any order.
-
 The query result format is in the following example:
 
 Weather
@@ -669,7 +665,6 @@ and w1.temperature > w2.temperature
 
 /* 40. Department Highest Salary
 The Employee table holds all employees. Every employee has an Id, a salary, and there is also a column for the department Id.
-
 +----+-------+--------+--------------+
 | Id | Name  | Salary | DepartmentId |
 +----+-------+--------+--------------+
@@ -680,7 +675,6 @@ The Employee table holds all employees. Every employee has an Id, a salary, and 
 | 5  | Max   | 90000  | 1            |
 +----+-------+--------+--------------+
 The Department table holds all departments of the company.
-
 +----+----------+
 | Id | Name     |
 +----+----------+
@@ -688,7 +682,6 @@ The Department table holds all departments of the company.
 | 2  | Sales    |
 +----+----------+
 Write a SQL query to find employees who have the highest salary in each of the departments. For the above tables, your SQL query should return the following rows (order of rows does not matter).
-
 +------------+----------+--------+
 | Department | Employee | Salary |
 +------------+----------+--------+
@@ -730,7 +723,6 @@ Write a SQL query to rank scores. If there is a tie between two scores, both sho
 | 6  | 3.65  |
 +----+-------+
 For example, given the above Scores table, your query should generate the following report (order by highest score):
-
 +-------+---------+
 | score | Rank    |
 +-------+---------+
@@ -747,7 +739,6 @@ from Scores;
 
 /* 42. Consecutive Numbers
 Table: Logs
-
 +-------------+---------+
 | Column Name | Type    |
 +-------------+---------+
@@ -755,15 +746,9 @@ Table: Logs
 | num         | varchar |
 +-------------+---------+
 id is the primary key for this table.
- 
-
 Write an SQL query to find all numbers that appear at least three times consecutively.
-
 Return the result table in any order.
-
 The query result format is in the following example:
-
- 
 
 Logs table:
 +----+-----+
@@ -857,7 +842,6 @@ The table contains information about an employee.
 Write an SQL query to swap all 'f' and 'm' values (i.e., change all 'f' values to 'm' and vice versa) with a single update statement and no intermediate temp table(s).
 
 Note that you must write a single update statement, DO NOT write any select statement for this problem.
-
 The query result format is in the following example:
 
 Salary table:
@@ -1023,3 +1007,83 @@ on h.opponent = a.opponent
 where h.goals_scored > h.goals_conceded
 and a.goals_scored > a.goals_conceded
 
+/* 54. Joining Date
+Consider the table employee having the following columns
+
+employee_id : storing the unique id of the employee
+employee_name : storing the name of the employee
+designation : storing the designation of the employee
+joining_date : storing the date employee joined the organisation in YYYY-MM-DD format
+
+Write a query to print the name of the employees in the order they joined the organisation.(Earliest first) In case two people have joined the organisation on the same date, the person higher in the organisational hierarchy should appear first. (CEO first)
+
+CEO - First level
+Department Head - Second level
+Regional Manager - Third level */
+
+select employee_name
+from employee
+order by joining_date,
+case
+when designation = 'CEO' then 1
+when designation = 'Department Head' then 2
+when designation = 'Regional Manager' then 3
+End asc;
+
+/* 55.Average marks
+Consider the two tables from a university database, student and marks.
+Student table contains two columns
+student_id          : storing the unique id of the student
+student_name  : storing the name of the student
+The table marks contains the marks obtained by students in various courses.
+student_id : storing the id of the student
+marks           : storing the marks obtained by the student in one course.
+
+Please note that the name of a student may not be present in the marks obtained table; this is because the student has not yet attempted the exam
+
+Write a query to print the name of the student along with the average marks obtained by the student. Order your result by average marks obtained, highest first. In case a student has not attempted any exam, it should also be included in the result with average marks as NULL and displayed at the end of the resulting table.*/
+
+select s.student_name, avg(m.marks)
+from student s
+left join marks m
+on s.student_id = m.student_id
+group by s.student_name
+order by avg(m.marks) desc
+
+/* 56. Symmetric Pair
+Given the tables student, mathematics_marks, science_marks
+
+student
+student_id (Primary Key) | smallint
+student_name                         | varchar(30)
+
+mathematics_marks
+student_id (Primary Key) | smallint
+score                                            | float (5,2)
+
+science_marks
+student_id (Primary Key) | smallint
+score                                             | float (5,2)
+
+A student is called as being a part of a symmetric pair if the marks obtained by that student in science is equal to the marks obtained by some other student in mathematics and the marks obtained in mathematics are the same as marks obtained by the other student in science.
+For example, if Sanskar obtained 78 marks in Mathematics and 80 in Science while Vikas received 80 in Mathematics and 78 in Science, Vikas and Sanskar are both parts of a symmetric pair.
+Write a SQL query to find the name of the students who are a part of a symmetric pair. Arrange the output in the order of student name. (A first, z last) */
+
+
+select student1.student_name, student2.student_name
+from (
+         select s1.student_id, s1.student_name, m1.score "m_score", sc1.score "sc_score"
+         from student s1
+                  join mathematics_marks m1 on s1.student_id = m1.student_id
+                  join science_marks sc1 on s1.student_id = sc1.student_id) student1,
+     (
+         select s2.student_id, s2.student_name, m2.score "m_score", sc2.score "sc_score"
+         from student s2
+                  join mathematics_marks m2 on s2.student_id = m2.student_id
+                  join science_marks sc2 on s2.student_id = sc2.student_id) student2
+
+where student1.student_id<>student2.student_id
+  and student1.m_score = student2.sc_score
+  and student1.sc_score = student2.m_score 
+group by 1,2
+order by 1,2
