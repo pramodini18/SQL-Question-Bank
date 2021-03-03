@@ -1087,3 +1087,52 @@ where student1.student_id<>student2.student_id
   and student1.sc_score = student2.m_score 
 group by 1,2
 order by 1,2
+
+/* 57. Even marks
+Consider a table consisting the marks of students in a mathematics test along with their unique student_id. Write a query to determine which students got the marks that is divisible by 10 and which students did not. Make sure that the output is ordered by student_id.
+marks
+student_id | marks
+
+output:
+student_id | marks | div_by_ten
+
+Note that the mod function is used to determine the remainder in MySQL. You can read more about the same here. */
+select student_id, marks,
+case
+when mod(marks,10) = 0 then 'yes'
+when  mod(marks,10) != 0 then 'no'
+end as div_by_ten
+from marks
+order by student_id;
+
+/* 58.Average distance
+Consider a table employee storing the details of the employee. 
+
+ssn : social security number of the employee
+address : storing the address of the employee
+
+Looking at the address field in the employee table, you would notice that all the employees reside in "Fondren, Houston, TX". Consider the integer in the address field as house number. Consider the distance between the two houses as the difference in the house numbers, so the distance between house number 2 and 38 is 36 units. Write a query to determine the average distance between the house of the employee with ssn '123456789' and the other employees' houses. Print the answer to two decimal places. Make sure that the answer is formatted with a comma like x,xxx.xx . */
+
+select Format(avg(abs((substring_index(address,' ',1)) - (select (substring_index(address,' ',1))
+from employee
+where ssn = '123456789'))),2)
+from employee
+where ssn != '123456789'
+
+/* 59. Topper
+Consider a table storing the marks obtained by student in five course, physics, chemistry, mathematics, history and philosophy in comma separated form. 
+marks
+student_id | marks
+23 | 67,85,89,70,76
+This can be interpreted as
+physics |67
+Chemistry | 85
+Mathematics | 89
+History | 70
+Philosophy | 76
+Write a query to determine the id of the student who has the highest average in Physics, Chemistry and Mathematics. Assume that the marks are all stored as two digit numbers.  */
+
+select student_id
+from marks
+order by substring(marks,1,2) + substring(marks,4,2)+ substring(marks,7,2) desc
+limit 1;
