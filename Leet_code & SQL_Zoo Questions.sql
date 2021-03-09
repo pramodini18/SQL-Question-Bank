@@ -1136,3 +1136,65 @@ select student_id
 from marks
 order by substring(marks,1,2) + substring(marks,4,2)+ substring(marks,7,2) desc
 limit 1;
+
+/* 60. Employee gender
+Consider the table employee with the following columns
+
+fname         : Storing the first name of the employee
+minit            : storing the middle initial of the employee
+lname          : Storing the last name of the employee
+ssn                : Storing the social security number of the employee
+bdate          : Storing the date of birth of the employee
+address      : Storing the address of the employee
+sex                : Storing the gender of the employee
+salary          : Storing the annual salary of the employee
+super_ssn : Storing the socila security number of the supervisor of the employee
+dno               : Storing the department number of the employee
+
+Write a query to find the social security number of all employees who are either female or have salary greater than 30000. Order the results on the basis of social security number in ascending order. Please note that the gender is denoted by either F or M. */
+
+select ssn
+from employee
+where sex = 'F'
+or salary > 30000
+order by ssn
+
+/* 61. Maximum Price
+Consider a table named 'food' in a restaurant database having the following columns
+name : storing the name of the dish
+price : storing the price of the dish
+Write a query to determine the type of food item (Maggi, Pasta, Sandwich,Mojito,Shake,....) which has the maximum average price along with the average price of the said food type. Please note that the food item type is determined by the last word in the food_name. */
+
+select  substring_index(food_name,' ',-1), avg(price)
+from food
+group by substring_index(food_name,' ',-1)
+order by avg(price) desc
+limit 1;
+
+/* 62. Same Salary
+Given the tables student, roommate, salary
+
+student
+student_id (Primary Key) | smallint
+student_name                         | varchar(30)
+
+roommate
+student_id (Primary Key) | smallint
+roommate_id                           | smallint
+
+salary
+student_id (Primary Key) | smallint
+salary                                           | float(10,2)
+Write a SQL query to print the name of the students with the same salary as their roommate in order of their student id? */
+
+select student_name
+from student 
+where student_id in
+(select r.student_id
+from roommate r
+join salary s1
+on r.student_id = s1.student_id
+join salary s2
+on s2.student_id = r.roommate_id
+where s1.salary = s2.salary)
+order by student_id
