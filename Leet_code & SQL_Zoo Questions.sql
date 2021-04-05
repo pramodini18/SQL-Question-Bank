@@ -1198,3 +1198,121 @@ join salary s2
 on s2.student_id = r.roommate_id
 where s1.salary = s2.salary)
 order by student_id
+
+----------- Hackerrank ------------
+
+/* 63.Draw The Triangle
+
+P(R) represents a pattern drawn by Julia in R rows. The following pattern represents P(5):
+
+* * * * * 
+* * * * 
+* * * 
+* * 
+*
+Write a query to print the pattern P(20). */
+
+-- Mysql:
+
+set @num = 21;
+select repeat('* ', @num := @num -1)
+from information_schema.tables;
+
+-- MS server:
+
+declare @number int
+set @number = 20
+while(@number >0)
+begin
+    select replicate('* ', @number) 
+    set @number = @number-1
+end
+
+
+/* 64. Write a query identifying the type of each record in the TRIANGLES table using its three side lengths. Output one of the following statements for each record in the table:
+
+Equilateral: It's a triangle with  sides of equal length.
+Isosceles: It's a triangle with  sides of equal length.
+Scalene: It's a triangle with  sides of differing lengths.
+Not A Triangle: The given values of A, B, and C don't form a triangle. */
+
+SELECT CASE 
+
+WHEN (A + B > C) AND (B + C > A) AND (A + C > B) 
+THEN 
+              
+CASE WHEN A = B AND B = C THEN 'Equilateral'
+    WHEN A = B OR B = C OR A = C THEN 'Isosceles'
+    
+ELSE 'Scalene'
+END 
+ELSE 'Not A Triangle'
+
+ END
+FROM TRIANGLES;
+
+/* 65. Higher Than 75 Marks
+
+Query the Name of any student in STUDENTS who scored higher than  Marks. Order your output by the last three characters of each name. If two or more students both have names ending in the same last three characters (i.e.: Bobby, Robby, etc.), secondary sort them by ascending ID.
+
+Input Format
+ID | int
+Name | String
+Marks | Integer */
+
+select name
+from students
+where marks > 75
+order by RIGHT(name,3), ID asc
+
+/* 66.Weather Observation Station
+
+Query the list of CITY names from STATION that do not start with vowels and do not end with vowels. Your result cannot contain duplicates.
+
+Input Format
+ID | int
+City | Varchar
+State | Varchar 
+LAT_N | VARCHAR
+LONG_W | VARCHAR
+where LAT_N is the northern latitude and LONG_W is the western longitude.*/
+
+select distinct city
+from station
+where left(city,1) not in ('a','e','i','o','u')
+and right(city,1) not in ('a','e','i','o','u')
+
+/*67. Weather Observation Station 
+Query the two cities in STATION with the shortest and longest CITY names, as well as their respective lengths (i.e.: number of characters in the name). If there is more than one smallest or largest city, choose the one that comes first when ordered alphabetically.
+
+Input Format
+ID | int
+City | Varchar
+State | Varchar 
+LAT_N | VARCHAR
+LONG_W | VARCHAR
+where LAT_N is the northern latitude and LONG_W is the western longitude.*/
+
+(select city, length(city) from station order by length(city) asc, city asc limit 1)
+union
+(select city, length(city) from station order by length(city) desc, city asc limit 1);
+
+/* 68. The Blunder
+
+Samantha was tasked with calculating the average monthly salaries for all employees in the EMPLOYEES table, but did not realize her keyboard's  key was broken until after completing the calculation. She wants your help finding the difference between her miscalculation (using salaries with any zeros removed), and the actual average salary.
+
+Write a query calculating the amount of error (i.e.: actual - miscalculated average monthly salaries), and round it up to the next integer.
+
+Input Format
+ID | int
+Name | String
+Salary | INT
+Note: Salary is per month. */
+
+select CEIL(avg(salary) - avg((replace(salary, 0,''))))
+from employees;
+
+
+
+
+
